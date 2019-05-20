@@ -6,8 +6,6 @@
 #include <Fonts/Picopixel.h>
 
 
-
-
 #define SCREEN_WIDTH 128 // OLED display width, in pixels
 #define SCREEN_HEIGHT 64 // OLED display height, in pixels
 
@@ -48,10 +46,10 @@ void loop() {
   delay(1000);
 
   display.clearDisplay();
+  
+  display.setFont(&Picopixel);
   display.setTextColor(WHITE);
-  //void setTextColor(uint16_t color, uint16_t backgroundcolor);
   display.setTextSize(2);
-  //display.setFont(&Picopixel);
   display.setTextWrap(true);
   display.setCursor(cursorX, cursorY);
   display.println(F("hi! "));
@@ -67,21 +65,4 @@ void loop() {
   display.println("test");
   display.display();
   delay(2000);
-//  Serial.println("test shown");
-//  delay(2000);
-//  display.setCursor(cursorX, cursorY);
-//  display.println("hi!");
-//  display.display();
-//  display.clearDisplay();
-//  delay(2000);
-//  display.setCursor(cursorX, cursorY);
-//  display.println("HI!!");
-//  display.display();
-//  delay(2000);
-//  display.clearDisplay();
-//  display.setCursor(cursorX, cursorY);
-//  display.println("hallo");
-//  display.display();
-//  delay(2000);
-//
 }
