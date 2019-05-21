@@ -6,17 +6,18 @@
 #include <Fonts/Picopixel.h>
 #include <Fonts/FreeMono12pt7b.h>
 #include <LedControl.h>
-//
-LedControl lc = LedControl(12, 10, 11, 1);
 
-unsigned long delaytime1 = 500;
-unsigned long delaytime2 = 50;
+//Matrix Definition
+int dataIn = 53;
+int loadCS = 51;
+int clk = 49;
+LedControl lc = LedControl(dataIn, clk, loadCS, 1);
+unsigned long delaytime1 = 2000;
+unsigned long delaytime2 = 200;
 
 //Display Definition
-
 #define SCREEN_WIDTH 128 // OLED display width, in pixels
 #define SCREEN_HEIGHT 64 // OLED display height, in pixels
-
 int cursorX = 10;
 int cursorY = 30;
 
@@ -53,7 +54,7 @@ void setup()
   //Matrix Setup
   {
     lc.shutdown(0, false);
-    lc.setIntensity(0, 8);
+    lc.setIntensity(0, 1);
     lc.clearDisplay(0);
   }
 }
@@ -120,10 +121,93 @@ void writeArduinoOnMatrix()
   delay(delaytime1);
 }
 
+/*
+  This function lights up a some Leds in a row.
+ The pattern will be repeated on every row.
+ The pattern will blink along with the row-number.
+ row number 4 (index==3) will blink 4 times etc.
+ */
+void rows()
+{
+  for (int row = 0; row < 8; row++)
+  {
+    delay(delaytime2);
+    lc.setRow(0, row, B10101010);
+    delay(delaytime2);
+    lc.setRow(0, row, (byte)0);
+    for (int i = 0; i < row; i++)
+    {
+      delay(delaytime2);
+      lc.setRow(0, row, B10101010);
+      delay(delaytime2);
+      lc.setRow(0, row, (byte)0);
+    }
+  }
+}
+
+/*
+  This function lights up a some Leds in a column.
+ The pattern will be repeated on every column.
+ The pattern will blink along with the column-number.
+ column number 4 (index==3) will blink 4 times etc.
+ */
+void columns()
+{
+  for (int col = 0; col < 8; col++)
+  {
+    delay(delaytime2);
+    lc.setColumn(0, col, B10100000);
+    delay(delaytime2);
+    lc.setColumn(0, col, (byte)0);
+    for (int i = 0; i < col; i++)
+    {
+      delay(delaytime2);
+      lc.setColumn(0, col, B10100000);
+      delay(delaytime2);
+      lc.setColumn(0, col, (byte)0);
+    }
+  }
+}
+
+/* 
+ This function will light up every Led on the matrix.
+ The led will blink along with the row-number.
+ row number 4 (index==3) will blink 4 times etc.
+ */
+void single()
+{
+  for (int row = 0; row < 8; row++)
+  {
+    for (int col = 0; col < 8; col++)
+    {
+      delay(delaytime2);
+      lc.setLed(0, row, col, true);
+      delay(delaytime2);
+      for (int i = 0; i < col; i++)
+      {
+        lc.setLed(0, row, col, false);
+        delay(delaytime2);
+        lc.setLed(0, row, col, true);
+        delay(delaytime2);
+      }
+    }
+  }
+}
+
 void loop()
 {
   writeArduinoOnMatrix();
-/*
+  lc.clearDisplay(0);
+  
+  rows();
+  lc.clearDisplay(0);
+  columns();
+  lc.clearDisplay(0);
+  single();
+  lc.clearDisplay(0);
+  
+
+  /*
   delay(1000);
 
   display.clearDisplay();
